@@ -15,4 +15,13 @@ Microservicio Java 21 + Spring Boot para administrar productos e inventario.
 {"name":"Laptop Lenovo","category":"Laptops","price":2499.90,"stock":10}
 ```
 
+## Descuento atómico de stock
+
+`PATCH /api/products/{id}/stock/decrease`
+
+Body:
+```json
+{"quantity":2}
+```
+
 Puerto local: `8081`.

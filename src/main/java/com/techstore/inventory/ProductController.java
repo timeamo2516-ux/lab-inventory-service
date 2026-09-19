@@ -1,8 +1,11 @@
-package com.lab.inventory;
+package com.techstore.inventory;
+
 import jakarta.validation.Valid;
 import org.springframework.http.*;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/products")
 @CrossOrigin(origins="*")
@@ -22,5 +25,13 @@ public class ProductController {
   @DeleteMapping("/{id}") public ResponseEntity<Void> delete(@PathVariable Long id){
     if(!repository.existsById(id)) return ResponseEntity.notFound().build();
     repository.deleteById(id); return ResponseEntity.noContent().build();
+  }
+  @Transactional
+  @PatchMapping("/{id}/stock/decrease")
+  public ResponseEntity<?> decrease(@PathVariable Long id,@Valid @RequestBody StockRequest request){
+    if(!repository.existsById(id)) return ResponseEntity.notFound().build();
+    int updated=repository.decreaseStock(id,request.quantity());
+    if(updated==0) return ResponseEntity.status(HttpStatus.CONFLICT).body("Stock insuficiente");
+    return ResponseEntity.ok(repository.findById(id).orElseThrow());
   }
 }
